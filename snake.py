@@ -1,4 +1,12 @@
+from enum import IntEnum, auto
 from turtle import Turtle
+
+
+class Direction(IntEnum):
+    UP = auto()
+    LEFT = auto()
+    DOWN = auto()
+    RIGHT = auto()
 
 
 class SnakeTile(Turtle):
@@ -31,6 +39,7 @@ class SnakeTile(Turtle):
 class Snake:
     def __init__(self) -> None:
         self._segments: list[SnakeTile] = []
+        self._current_direction = Direction.RIGHT
         self.create_snake()
 
     def create_snake(self):
@@ -43,7 +52,28 @@ class Snake:
 
     def make_a_move(self, move_distance: int = 20):
         for segment_0, segment_1 in zip(self._segments[::-1], self._segments[-2::-1]):
-            print(segment_0, segment_1)
             segment_0.goto(segment_1.xcor(), segment_1.ycor())
 
         self._head.forward(move_distance)
+
+    def _set_head_direction(self, direction: Direction, heading: int) -> None:
+        self._current_direction = direction
+        self._head.setheading(heading)
+
+    def turn(self, direction: Direction):
+        heading = None
+
+        if self._current_direction in (Direction.UP, Direction.DOWN):
+            if direction == Direction.LEFT:
+                heading = 180
+            elif direction == Direction.RIGHT:
+                heading = 0
+
+        elif self._current_direction in (Direction.LEFT, Direction.RIGHT):
+            if direction == Direction.UP:
+                heading = 90
+            elif direction == Direction.DOWN:
+                heading = 270
+
+        if heading is not None:
+            self._set_head_direction(direction, heading)

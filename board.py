@@ -1,4 +1,5 @@
 from turtle import Screen
+from typing import Callable
 
 
 class Board():
@@ -17,3 +18,7 @@ class Board():
 
     def __exit__(self, *args):
         self._screen.exitonclick()
+
+    def bind(self, func: Callable[[], None], key: str) -> None:
+        self._screen.onkey(func, key)
+        self._screen.listen()
