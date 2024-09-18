@@ -3,9 +3,9 @@ from typing import Callable
 
 
 class Board():
-    def __init__(self) -> None:
+    def __init__(self, width: int = 600, height: int = 600) -> None:
         self._screen = Screen()
-        self._screen.setup(width=600, height=600)
+        self._screen.setup(width=width, height=height)
         self._screen.bgcolor('black')
         self._screen.title("Snake Game")
         self._screen.tracer(0)

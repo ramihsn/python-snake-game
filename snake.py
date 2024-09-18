@@ -12,9 +12,9 @@ class Direction(IntEnum):
 class SnakeTile(Turtle):
     INDEX = 0
 
-    def __init__(self, shape: str = "square", color: str = 'white', x: int = 0, y: int = 0) -> None:
+    def __init__(self, shape: str = "square", color: str = 'white', x: int = 0, y: int = 0, width: int = 20):
         super().__init__(shape)
-        self.width = 20
+        self.width = width
         self.color(color)
         self.penup()
         if x and y:
@@ -37,28 +37,29 @@ class SnakeTile(Turtle):
 
 
 class Snake:
-    def __init__(self) -> None:
+    def __init__(self, tile_width: int = 20) -> None:
+        self.tile_width = tile_width
         self._segments: list[SnakeTile] = []
         self._current_direction = Direction.RIGHT
         self.create_snake()
 
     def create_snake(self):
-        self._head = SnakeTile()
+        self.head = SnakeTile(width=self.tile_width)
         self._segments.extend([
-            self._head,
-            SnakeTile(x=-20),
-            SnakeTile(x=-40),
+            self.head,
+            SnakeTile(x=-20, width=self.tile_width),
+            SnakeTile(x=-40, width=self.tile_width),
         ])
 
     def make_a_move(self, move_distance: int = 20):
         for segment_0, segment_1 in zip(self._segments[::-1], self._segments[-2::-1]):
             segment_0.goto(segment_1.xcor(), segment_1.ycor())
 
-        self._head.forward(move_distance)
+        self.head.forward(move_distance)
 
     def _set_head_direction(self, direction: Direction, heading: int) -> None:
         self._current_direction = direction
-        self._head.setheading(heading)
+        self.head.setheading(heading)
 
     def turn(self, direction: Direction):
         heading = None
