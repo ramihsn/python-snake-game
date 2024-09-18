@@ -41,6 +41,7 @@ class Snake:
         self.tile_width = tile_width
         self._segments: list[SnakeTile] = []
         self._current_direction = Direction.RIGHT
+        self._waiting_for_move = False
         self.create_snake()
 
     def create_snake(self):
@@ -56,12 +57,16 @@ class Snake:
             segment_0.goto(segment_1.xcor(), segment_1.ycor())
 
         self.head.forward(move_distance)
+        self._waiting_for_move = False
 
     def _set_head_direction(self, direction: Direction, heading: int) -> None:
         self._current_direction = direction
         self.head.setheading(heading)
 
     def turn(self, direction: Direction):
+        if self._waiting_for_move:
+            return
+
         heading = None
 
         if self._current_direction in (Direction.UP, Direction.DOWN):
@@ -78,3 +83,4 @@ class Snake:
 
         if heading is not None:
             self._set_head_direction(direction, heading)
+            self._waiting_for_move = True

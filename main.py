@@ -17,9 +17,11 @@ def _parse_args() -> Namespace:
 
 def main():
     args = _parse_args()
+    # assert 
 
     with Board(width=args.board_width, height=args.board_height) as board:
         snake = Snake(tile_width=args.snake_width)
+        food = Food(args.board_width, args.board_height, args.snake_width)
 
         board.bind(partial(snake.turn, Direction.UP), 'Up')
         board.bind(partial(snake.turn, Direction.LEFT), 'Left')
@@ -27,11 +29,15 @@ def main():
         board.bind(partial(snake.turn, Direction.DOWN), 'Down')
 
         try:
-            food = Food(args.board_width, args.board_height, args.snake_width)
             while True:
                 snake.make_a_move()
+
+                if food.distance(snake.head) < 5:
+                    food.refresh()
+
                 board.update()
                 time.sleep(.3)
+
         except Exception as e:
             print(e)
 

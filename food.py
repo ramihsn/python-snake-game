@@ -10,10 +10,17 @@ class Food(Turtle):
         self.color('blue')
         self.speed('fastest')
 
-        max_x = ((board_width // 2) - snake_width) // snake_width
+        self._board_width = board_width
+        self._board_height = board_height
+        self._snake_width = snake_width
+
+        self.refresh()
+
+    def refresh(self):
+        max_x = ((self._board_width // 2) - self._snake_width) // self._snake_width
         rand_x = random.randint(-max_x, max_x)
 
-        max_y = ((board_height // 2) - snake_width) // snake_width
+        max_y = ((self._board_height // 2) - self._snake_width) // self._snake_width
         rand_y = random.randint(-max_y, max_y)
 
-        self.goto(rand_x * snake_width, rand_y * snake_width)
+        self.goto(rand_x * self._snake_width, rand_y * self._snake_width)
