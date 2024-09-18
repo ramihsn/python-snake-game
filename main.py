@@ -1,6 +1,4 @@
 from turtle import Screen, Turtle
-from threading import Event
-from typing import Callable
 import time
 
 
@@ -32,27 +30,20 @@ class SnakeTile(Turtle):
 
 
 class Snake:
-    def __init__(self, game_event: Event, delay_between_moves: float, update_cb: Callable[[], None]) -> None:
+    def __init__(self) -> None:
         self._head = SnakeTile()
         self._segments: list[SnakeTile] = [
             self._head,
             SnakeTile(x=-20),
             SnakeTile(x=-40),
         ]
-        self._game_event = game_event
-        self._update_cb = update_cb
-        self._delay_between_moves = delay_between_moves
-        self._update_cb()
 
-    def start(self):
-        while not self._game_event.is_set():
-            for segment_0, segment_1 in zip(self._segments[::-1], self._segments[-2::-1]):
-                print(segment_0, segment_1)
-                segment_0.goto(segment_1.xcor(), segment_1.ycor())
+    def make_a_move(self):
+        for segment_0, segment_1 in zip(self._segments[::-1], self._segments[-2::-1]):
+            print(segment_0, segment_1)
+            segment_0.goto(segment_1.xcor(), segment_1.ycor())
 
-            self._head.forward(20)
-            self._update_cb()
-            time.sleep(self._delay_between_moves)
+        self._head.forward(20)
 
 
 class Board():
@@ -62,7 +53,6 @@ class Board():
         self._screen.bgcolor('black')
         self._screen.title("Snake Game")
         self._screen.tracer(0)
-        self.game_ended = Event()
 
     def update(self):
         self._screen.update()
@@ -72,13 +62,18 @@ class Board():
 
     def __exit__(self, *args):
         self._screen.exitonclick()
-        self.game_ended.set()
 
 
 def main():
     with Board() as board:
-        snake = Snake(board.game_ended, .5, board.update)
-        snake.start()
+        snake = Snake()
+        try:
+            while True:
+                snake.make_a_move()
+                board.update()
+                time.sleep(.3)
+        except KeyboardInterrupt:
+            ...
 
 
 if __name__ == "__main__":
