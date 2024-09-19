@@ -34,6 +34,7 @@ def main():
 
                 if food.distance(snake.head) < 5:
                     food.refresh()
+                    board.add_to_score()
 
                 board.update()
                 time.sleep(.3)
