@@ -29,19 +29,22 @@ def main():
 
         try:
             while True:
-                snake.make_a_move()
+                if not snake.make_a_move():
+                    board.game_over()
+                    break
 
-                if abs(snake.head.xcor()) > (args.board_height // 2) - args.snake_width or \
-                        abs(snake.head.ycor()) > (args.board_width // 2) - args.snake_width:
+                if abs(snake.head.xcor()) > (args.board_height // 2) - (args.snake_width // 2) or \
+                        abs(snake.head.ycor()) > (args.board_width // 2) - (args.snake_width // 2):
                     board.game_over()
                     break
 
                 if food.distance(snake.head) < 5:
+                    snake.eat()
                     food.refresh()
                     board.add_to_score()
 
                 board.update()
-                time.sleep(.3)
+                time.sleep(.1)
 
         except Exception as e:
             print(e)

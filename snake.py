@@ -52,12 +52,16 @@ class Snake:
             SnakeTile(x=-40, width=self.tile_width),
         ])
 
-    def make_a_move(self, move_distance: int = 20):
+    def make_a_move(self, move_distance: int = 20) -> bool:
         for segment_0, segment_1 in zip(self._segments[::-1], self._segments[-2::-1]):
             segment_0.goto(segment_1.xcor(), segment_1.ycor())
 
         self.head.forward(move_distance)
         self._waiting_for_move = False
+        for segment in self._segments[1:]:
+            if segment.distance(self.head) < 5:
+                return False
+        return True
 
     def _set_head_direction(self, direction: Direction, heading: int) -> None:
         self._current_direction = direction
@@ -84,3 +88,9 @@ class Snake:
         if heading is not None:
             self._set_head_direction(direction, heading)
             self._waiting_for_move = True
+
+    def eat(self):
+        self._segments.append(SnakeTile(
+            x=self._segments[-1].xcor(),
+            y=self._segments[-1].ycor(),
+        ))
