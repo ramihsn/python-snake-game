@@ -17,7 +17,6 @@ def _parse_args() -> Namespace:
 
 def main():
     args = _parse_args()
-    # assert 
 
     with Board(width=args.board_width, height=args.board_height) as board:
         snake = Snake(tile_width=args.snake_width)
@@ -31,6 +30,11 @@ def main():
         try:
             while True:
                 snake.make_a_move()
+
+                if abs(snake.head.xcor()) > (args.board_height // 2) - args.snake_width or \
+                        abs(snake.head.ycor()) > (args.board_width // 2) - args.snake_width:
+                    board.game_over()
+                    break
 
                 if food.distance(snake.head) < 5:
                     food.refresh()
